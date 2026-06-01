@@ -19,9 +19,8 @@ public class WatchlistService {
     }
 
     public List<WatchlistDto> getWatchlistsByUserId(Long userId) {
-        var watchlists = repository.findAll();
-        return watchlists.stream()
-                .filter(x -> x.getUserId() == userId)
+        return repository.findAllByUserId(userId)
+                .stream()
                 .map(WatchlistTransformers::getWatchlistResponse)
                 .toList();
     }
@@ -32,5 +31,9 @@ public class WatchlistService {
                 .userId(request.getUserId())
                 .build());
         return WatchlistTransformers.getWatchlistResponse(watchlist);
+    }
+
+    public void deleteWatchlist(Long id) {
+        repository.deleteById(id);
     }
 }
