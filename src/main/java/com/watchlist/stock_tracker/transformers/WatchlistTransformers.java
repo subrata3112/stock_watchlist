@@ -11,7 +11,7 @@ public class WatchlistTransformers {
         return WatchlistDto.builder()
                 .id(watchlist.getId())
                 .name(watchlist.getName())
-                .userId(watchlist.getId())
+                .userId(watchlist.getUserId())
                 .build();
     }
 }
