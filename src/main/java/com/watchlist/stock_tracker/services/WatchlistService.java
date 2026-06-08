@@ -36,4 +36,9 @@ public class WatchlistService {
     public void deleteWatchlist(Long id) {
         repository.deleteById(id);
     }
+
+    public Watchlist getWatchlistById(long watchlistId) {
+        if (watchlistId == 0) return null;
+        return repository.findById(watchlistId).orElse(null);
+    }
 }

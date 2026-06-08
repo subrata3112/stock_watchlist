@@ -34,7 +34,7 @@ public class StockService {
     }
 
     public EquityStockPriceDto getStockPrice(long stockId) throws IOException {
-        var stock = fetchDbStock(stockId);
+        var stock = getStockById(stockId);
         if (stock == null) {
             throw new CustomException("Invalid Stock Id", 404);
         }
@@ -46,6 +46,12 @@ public class StockService {
             dbPrice = updateStockPrice(dbPrice, fetchPriceDataFromYf(stockId));
         }
         return StockPriceTransformer.toStockPriceDto(stock, dbPrice);
+    }
+
+    public EquityStock getStockById(long stockId) {
+        if (stockId == 0) return null;
+        var dbStock = stockRepository.findById(stockId);
+        return dbStock.orElse(null);
     }
 
     private YahooStockQuoteDto fetchPriceDataFromYf(long stockId) throws IOException {
@@ -73,11 +79,5 @@ public class StockService {
         stockPrice.setChangePercentage52WeekLow(MathUtil.bigDecimalToLong(stockQuote.getChangePercentage52WeekLow()));
         stockPrice.setPriceUpdatedAt(System.currentTimeMillis());
         return stockPriceRespository.save(stockPrice);
-    }
-
-    private EquityStock fetchDbStock(long stockId) {
-        if (stockId == 0) return null;
-        var dbStock = stockRepository.findById(stockId);
-        return dbStock.orElse(null);
     }
 }
