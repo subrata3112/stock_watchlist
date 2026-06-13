@@ -2,6 +2,7 @@ package com.watchlist.stock_tracker.services;
 
 import com.watchlist.stock_tracker.dtos.WatchlistDto;
 import com.watchlist.stock_tracker.dtos.requests.CreateWatchlistRequest;
+import com.watchlist.stock_tracker.exceptions.CustomException;
 import com.watchlist.stock_tracker.models.Watchlist;
 import com.watchlist.stock_tracker.repositories.WatchlistRepository;
 import com.watchlist.stock_tracker.transformers.WatchlistTransformers;
@@ -33,8 +34,17 @@ public class WatchlistService {
         return WatchlistTransformers.getWatchlistResponse(watchlist);
     }
 
-    public void deleteWatchlist(Long id) {
-        repository.deleteById(id);
+    public void deleteWatchlist(Long id, long userId) {
+        Watchlist watchlist = getWatchlistById(id);
+        if (watchlist != null) {
+            if (watchlist.getUserId() == userId) {
+                repository.deleteById(id);
+            } else {
+                throw new CustomException("User not authorized to delete this resource", 403);
+            }
+        } else {
+            throw new CustomException("Invalid watchlist Id", 400);
+        }
     }
 
     public Watchlist getWatchlistById(long watchlistId) {

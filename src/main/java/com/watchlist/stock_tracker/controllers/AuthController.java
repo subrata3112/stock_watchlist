@@ -1,6 +1,7 @@
 package com.watchlist.stock_tracker.controllers;
 
 import com.watchlist.stock_tracker.dtos.requests.LoginRequest;
+import com.watchlist.stock_tracker.dtos.requests.TokenRefreshRequest;
 import com.watchlist.stock_tracker.dtos.responses.LoginResponse;
 import com.watchlist.stock_tracker.dtos.responses.SignupResponse;
 import com.watchlist.stock_tracker.services.AuthService;
@@ -26,6 +27,11 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<SignupResponse> signup(@RequestBody LoginRequest request) {
         return ResponseEntity.ok(authService.signup(request));
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<LoginResponse> refreshToken(@RequestBody TokenRefreshRequest request) {
+        return ResponseEntity.ok(authService.refreshToken(request));
     }
 
 }

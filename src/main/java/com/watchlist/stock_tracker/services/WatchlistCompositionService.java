@@ -27,6 +27,9 @@ public class WatchlistCompositionService {
         if (wl == null) {
             throw new CustomException("Invalid Watchlist ID", 404);
         }
+        if (wl.getUserId() != request.getUserId()) {
+            throw new CustomException("User don't have permission", 403);
+        }
         EquityStock stock = stockService.getStockById(request.getStockId());
         if (stock == null) {
             throw new CustomException("Invalid Stock ID", 404);
@@ -46,11 +49,27 @@ public class WatchlistCompositionService {
                 .build());
     }
 
-    public List<WatchlistComposition> getComposition(long watchlistId) {
+    public List<WatchlistComposition> getComposition(long watchlistId, long userId) {
+        Watchlist watchlist = watchlistService.getWatchlistById(watchlistId);
+        if (watchlist == null) {
+            throw new CustomException("Invalid Watchlist Id", 400);
+        }
+        if (watchlist.getUserId() != userId) {
+            throw new CustomException("User don't have permission", 403);
+        }
         return compositionRepository.findAllByWatchlistId(watchlistId);
     }
 
-    public void deleteComposition(long compositionId) {
+    public void deleteComposition(long compositionId, long userId) {
+        WatchlistComposition composition = compositionRepository.findById(compositionId).orElse(null);
+        if (composition != null) {
+            Watchlist watchlist = watchlistService.getWatchlistById(composition.getWatchlistId());
+            if (watchlist != null) {
+                if (watchlist.getUserId() != userId) {
+                    throw new CustomException("User don't have permission", 403);
+                }
+            }
+        }
         compositionRepository.deleteById(compositionId);
     }
 }

@@ -13,4 +13,6 @@ public class AddStockToWatchlistRequest {
 
     private long stockId;
 
+    private long userId;
+
 }
