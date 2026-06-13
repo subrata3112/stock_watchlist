@@ -1,5 +1,6 @@
 package com.watchlist.stock_tracker.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,6 +33,13 @@ public class User implements UserDetails {
     private String name;
 
     private String password;
+
+    @JsonIgnore
+    private String jwtToken;
+
+    @OneToOne(mappedBy = "user")
+    @JsonIgnore
+    private RefreshToken refreshToken;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
